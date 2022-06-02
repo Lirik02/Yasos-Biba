@@ -1,33 +1,37 @@
-cmake_minimum_required(VERSION 3.20.2)
-project(project_main_part)
+cmake_minimum_required(VERSION 3.21)
+project(Roguelike)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
+if (MACOS)
 set(CMAKE_PREFIX_PATH "~/Qt/6.2.4/macos/lib/cmake")
+else(UBUNTU)
+set(CMAKE_PREFIX_PATH ~/Qt/6.2.4/gcc_64)
+endif()
 
 find_package(Qt6 COMPONENTS Core Gui Widgets REQUIRED)
 
-add_executable(project_main_part
-        main.cpp
+include_directories(.)
 
-        model/location_model.cpp
-        model/location_model.h
-        model/character_model.cpp
-        model/character_model.h
-        model/characteristics.cpp
-        model/characteristics.h
+add_executable(Roguelike
+        model/bullet.cpp
+        model/bullet.h
+        model/sprite.cpp
+        model/sprite.h
 
-        view/view.cpp
-        view/view.h
-        view/scene.cpp
-        view/scene.h
+        view/customscene.cpp
+        view/customscene.h
+        view/widget.cpp
+        view/widget.h
 
-        controller/location_controller.cpp
-        controller/location_controller.h
-        controller/player_controller.cpp
-        controller/player_controller.h
-        )
-target_link_libraries(project_main_part Qt6::Core Qt6::Gui Qt6::Widgets)
+        controllers/target.cpp
+        controllers/target.h
+        controllers/triangle.cpp
+        controllers/triangle.h
+
+        main.cpp)
+
+target_link_libraries(Roguelike Qt6::Core Qt6::Gui Qt6::Widgets)
