@@ -6,11 +6,12 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
+
 set(CMAKE_PREFIX_PATH ~/Qt/6.3.0/gcc_64)
+
 
 find_package(Qt6 COMPONENTS Core Gui Widgets REQUIRED)
 
-include_directories(.)
 
 add_executable(Roguelike
         model/bullet.cpp

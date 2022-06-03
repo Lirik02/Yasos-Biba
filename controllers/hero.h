@@ -14,7 +14,7 @@
 //#include <windows.h>
 
 enum Rotation{
-  up, down, left, right
+  up, down, left, right, in_position
 };
 
 class Hero : public QObject, public QGraphicsItem {
@@ -45,6 +45,7 @@ class Hero : public QObject, public QGraphicsItem {
 
  private slots:
   void slotGameTimer();   /// Игровой слот
+  void slotSpritesTimer();   /// Игровой слот
   void slotBulletTimer(); /// Слот проверки пули
 
  private:

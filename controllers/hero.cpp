@@ -17,7 +17,8 @@ Hero::Hero(QObject* parent) :
     QObject(parent), QGraphicsItem() {
   QPixmap image("../resources/character.png");
   current_sprite_ = image.copy(sprite_x_, sprite_y_, 80, 85);
-  mouse_position_ = QPointF(0, 0);  /// Устанавливаем изначальное положение курсора
+  mouse_position_ =
+      QPointF(0, 0);  /// Устанавливаем изначальное положение курсора
   shot_condition_ = false;
 
   game_timer_ = new QTimer();   /// Инициализируем игровой таймер
@@ -118,40 +119,46 @@ void Hero::slotShot(bool shot) {
 }
 void Hero::NextSprite() {
   QPixmap image("../resources/character.png");
-  if(rotation_ == down) {
+  if (rotation_ == down) {
     sprite_y_ = 5;
     sprite_x_ += 80;
-    if(sprite_x_ == 830) {
+    if (sprite_x_ == 830) {
       sprite_x_ = 30;
     }
     current_sprite_ = image.copy(sprite_x_, sprite_y_, 80, 85);
   }
-  if(rotation_ == up) {
+  if (rotation_ == up) {
     sprite_y_ = 175;
     sprite_x_ += 80;
-    if(sprite_x_ == 830) {
+    if (sprite_x_ == 830) {
       sprite_x_ = 30;
     }
     current_sprite_ = image.copy(sprite_x_, sprite_y_, 80, 85);
   }
-  if(rotation_ == left) {
+  if (rotation_ == left) {
     sprite_y_ = 90;
     sprite_x_ += 80;
-    if(sprite_x_ == 830) {
+    if (sprite_x_ == 830) {
       sprite_x_ = 30;
     }
     current_sprite_ = image.copy(sprite_x_, sprite_y_, 80, 85);
   }
-  if(rotation_ == right) {
+  if (rotation_ == right) {
     sprite_y_ = 260;
     sprite_x_ += 80;
-    if(sprite_x_ == 830) {
+    if (sprite_x_ == 830) {
       sprite_x_ = 30;
     }
     current_sprite_ = image.copy(sprite_x_, sprite_y_, 80, 85);
+  }
+  if(rotation_ == in_position) {
+    sprite_x_ = 30;
   }
 }
 
 void Hero::SetRotation(Rotation rotation) {
   rotation_ = rotation;
+}
+void Hero::slotSpritesTimer() {
+
 }

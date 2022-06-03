@@ -20,8 +20,8 @@ Target::~Target() {
 QRectF Target::boundingRect() const {
   return QRectF(-20,
                 -20,
-                40,
-                40);   // Ограничиваем область, в которой лежит цель
+                64,
+                74);   // Ограничиваем область, в которой лежит цель
 }
 
 void Target::paint(QPainter* painter,
@@ -29,9 +29,8 @@ void Target::paint(QPainter* painter,
                    QWidget* widget) {
   /* Отрисовываем зеленый квадрат
    * */
-  painter->setPen(Qt::black);
-  painter->setBrush(Qt::green);
-  painter->drawRect(-20, -10, 40, 30);
+
+  painter->drawPixmap(-20, -10,  QPixmap("../resources/enemy/1 Pink_Monster/Pink_Monster.png"));
 
   /* Отрисовываем полоску жизни
    * соизмеримо текущему здоровью
@@ -47,7 +46,7 @@ void Target::paint(QPainter* painter,
 
 void Target::Hit(int damage) {
   health_ -= damage;   // Уменьшаем здоровье мишени
-  this->update(QRectF(-20, -20, 40, 40));    // Перерисовываем мишень
+  this->update(QRectF(-20, -20, 40, 60));    // Перерисовываем мишень
   // Если здоровье закончилось, то инициируем смерть мишени
   if (health_ <= 0) this->deleteLater();
 }

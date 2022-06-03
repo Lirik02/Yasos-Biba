@@ -96,14 +96,14 @@ void Bullet::slotBulletTimer() {
   if (this->x() < 0) {
     this->deleteLater();
   }
-  if (this->x() > 500) {
+  if (this->x() > 1920) {
     this->deleteLater();
   }
 
   if (this->y() < 0) {
     this->deleteLater();
   }
-  if (this->y() > 500) {
+  if (this->y() > 1080) {
     this->deleteLater();
   }
 }

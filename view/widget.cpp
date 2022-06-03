@@ -14,8 +14,8 @@ Widget::Widget(QWidget* parent) :
     QWidget(parent),
     ui(new Ui::Widget) {
   /// Устанавливаем параметры окна приложения
-  this->resize(600, 600);
-  this->setMinimumSize(600, 600);
+  this->resize(1440, 900);
+  this->setMinimumSize(1440, 900);
 
   ui->setupUi(this);
   custom_scene_ =
@@ -31,11 +31,18 @@ Widget::Widget(QWidget* parent) :
                               Widget::window()->width(),
                               Widget::window()->height());   /// Устанавливаем размеры графической сцены
 
+  full_fon_ = (QPixmap("../resources/map/map.png"));
+
+  DrawValidMap();
+
+
   /// Создаем кастомизированный курсор из ресурсного файла
   QCursor cursor = QCursor(QPixmap("../resources/cursor/cursorTarget.png"));
   ui->graphicsView->setCursor(cursor);    /// Устанавливаем курсор в QGraphicsView
   hero_ = new Hero();  /// Инициализируем треугольник
-  hero_->setPos(60, 60);  /// Устанавливаем стартовую позицию треугольника
+  hero_->setPos(Widget::width() / 2,
+                Widget::height()
+                    / 2);  /// Устанавливаем стартовую позицию треугольника
   hero_->setZValue(2);
   custom_scene_->addItem(hero_);   /// Добавляем треугольник на графическую сцену
 
@@ -68,7 +75,7 @@ Widget::Widget(QWidget* parent) :
                          QPen(Qt::NoPen));
   custom_scene_->addLine(Widget::width(), 0, Widget::width(), Widget::height(),
                          QPen(Qt::NoPen));
-  custom_scene_->addLine( Widget::width(), Widget::height(), 0, Widget::height(),
+  custom_scene_->addLine(Widget::width(), Widget::height(), 0, Widget::height(),
                          QPen(Qt::NoPen));
   custom_scene_->addLine(0, Widget::height(), 0, 0,
                          QPen(Qt::NoPen));
@@ -77,14 +84,7 @@ Widget::Widget(QWidget* parent) :
   // polygon << QPoint(300, 180) << QPoint(125, 365) << QPoint(100, 149);
   // custom_scene_->addPolygon(polygon);
 
-  //custom_scene_->addPixmap(QPixmap("../resources/map/map.png"));
-  //auto item = QGraphicsView("../resources/map/map.png");
-  //custom_scene_->addPixmap(item);
-  // image_width_ = static_cast<int>(item->boundingRect().width()) - 500;
-  // view_->setScene(custom_scene_);
-   //custom_scene_->set(Qt::ScrollBarAlwaysOff);
-  // view_->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-  // view_->resize(500, 500);
+
 
   /// Инициализируем таймер для создания мишеней
   target_creating_timer_ = new QTimer();
@@ -92,7 +92,7 @@ Widget::Widget(QWidget* parent) :
           &QTimer::timeout,
           this,
           &Widget::slotCreateTarget);
-  target_creating_timer_->start(1500);
+  target_creating_timer_->start(10000);
 }
 
 Widget::~Widget() {
@@ -109,8 +109,8 @@ void Widget::slotCreateBullet(QPointF start, QPointF end) {
 void Widget::slotCreateTarget() {
   Target* target = new Target();  /// Создаём цель
   custom_scene_->addItem(target);         /// Помещаем цель в сцену со случайной позицией
-  target->setPos(rand() % ((500 - 40 + 1) - 40) + 40,
-                 rand() % ((500 - 40 + 1) - 40) + 40);
+  target->setPos(rand() % ((5000 - 40 + 1) - 40) + 40,
+                 rand() % ((5000 - 40 + 1) - 40) + 40);
   target->setZValue(-1);          /// Помещаем цель ниже Героя
   targets_list_.append(target);         /// Добавляем цель в список
 }
@@ -184,52 +184,103 @@ static qreal normalizeAngle(qreal angle) {
 }
 
 void Widget::SlotMovmentTimer() {
+
   /** Перемещаем треугольник в зависимости от нажатых кнопок
    * */
   if (is_a_key_pressed_) {
     hero_->SetRotation(left);
-    hero_->setX(hero_->x() - 1);
+    //hero_->setX(hero_->x() - 1);
+    map_x_--;
+    DrawValidMap();
     /* Проверяем на столкновение,
      * если столкновение произошло,
      * то возвращаем героя обратно в исходную точку
      * */
     if (!hero_->scene()->collidingItems(hero_).isEmpty()) {
-      hero_->setX(hero_->x() + 1);
+      //hero_->setX(hero_->x() + 1);
+      map_x_++;
+      DrawValidMap();
+    } else {
+      for (int i = 0; i < targets_list_.size(); ++i) {
+        targets_list_[i]->setX(targets_list_[i]->x() + 1);
+      }
     }
   }
   if (is_d_key_pressed_) {
     hero_->SetRotation(right);
-    hero_->setX(hero_->x() + 1);
+    //hero_->setX(hero_->x() + 1);
+    map_x_++;
+    DrawValidMap();
     /* Проверяем на столкновение,
      * если столкновение произошло,
      * то возвращаем героя обратно в исходную точку
      * */
     if (!hero_->scene()->collidingItems(hero_).isEmpty()) {
-      hero_->setX(hero_->x() - 1);
+      // hero_->setX(hero_->x() - 1);
+      map_x_--;
+      DrawValidMap();
+    } else {
+      for (int i = 0; i < targets_list_.size(); ++i) {
+        targets_list_[i]->setX(targets_list_[i]->x() - 1);
+      }
     }
   }
   if (is_w_key_pressed_) {
     hero_->SetRotation(up);
-    hero_->setY(hero_->y() - 1);
+    // hero_->setY(hero_->y() - 1);
+    map_y_--;
+    DrawValidMap();
     /* Проверяем на столкновение,
      * если столкновение произошло,
      * то возвращаем героя обратно в исходную точку
      * */
     if (!hero_->scene()->collidingItems(hero_).isEmpty()) {
-      hero_->setY(hero_->y() + 1);
+      //  hero_->setY(hero_->y() + 1);
+      map_y_++;
+      DrawValidMap();
+    } else {
+      for (int i = 0; i < targets_list_.size(); ++i) {
+        targets_list_[i]->setY(targets_list_[i]->y() + 1);
+      }
     }
   }
   if (is_s_key_pressed_) {
     hero_->SetRotation(down);
-    hero_->setY(hero_->y() + 1);
+    //hero_->setY(hero_->y() + 1);
+    map_y_++;
+    DrawValidMap();
     /* Проверяем на столкновение,
      * если столкновение произошло,
      * то возвращаем героя обратно в исходную точку
      * */
     if (!hero_->scene()->collidingItems(hero_).isEmpty()) {
-      hero_->setY(hero_->y() - 1);
+      // hero_->setY(hero_->y() - 1);
+      map_y_--;
+      DrawValidMap();
+    } else {
+      for (int i = 0; i < targets_list_.size(); ++i) {
+        targets_list_[i]->setY(targets_list_[i]->y() - 1);
+      }
     }
   }
+  if (!is_w_key_pressed_ && !is_a_key_pressed_ && !is_s_key_pressed_ && !is_d_key_pressed_){
+    hero_->SetRotation(in_position);
+  }
+}
+
+void Widget::DrawValidMap() {
+  QPixmap visible_fon = full_fon_.copy(map_x_, map_y_,
+                                       map_width_, map_height_);
+  if (map_x_ < 0) {
+    map_x_ = 0;
+  }
+  if (map_y_ < 0) {
+    map_y_ = 0;
+  }
+  if (map_x_ + map_width_ > full_fon_.width()) {
+    map_x_ = full_fon_.width() - map_width_;
+  }
+  custom_scene_->setBackgroundBrush(visible_fon);
 }
 
 
