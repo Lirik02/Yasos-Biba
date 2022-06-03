@@ -28,6 +28,9 @@ add_executable(Roguelike
         controllers/target.h
         controllers/hero.cpp
         controllers/hero.h
+        
+        menu/menu.cpp
+        menu/menu.h
 
         main.cpp)
 
