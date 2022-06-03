@@ -12,7 +12,8 @@ static int randomBetween(int low, int high) {
 
 Widget::Widget(QWidget* parent) :
     QWidget(parent),
-    ui(new Ui::Widget) {
+    ui(new Ui::Widget),
+    exit_button_(new QPushButton("Выход", this)) {
   /// Устанавливаем параметры окна приложения
   this->resize(1440, 900);
   this->setMinimumSize(1440, 900);
@@ -93,6 +94,17 @@ Widget::Widget(QWidget* parent) :
           this,
           &Widget::slotCreateTarget);
   target_creating_timer_->start(10000);
+      
+        /// Cвязываем кнопку и процесс выхода
+  connect(exit_button_, &QPushButton::pressed, this, [&] {
+    auto answer = QMessageBox::question(this, "Выход",
+                                        "Вы уверены?");
+    if (answer == QMessageBox::Yes) {
+      close();
+    }
+  });
+  exit_button_->raise();
+
 }
 
 Widget::~Widget() {
