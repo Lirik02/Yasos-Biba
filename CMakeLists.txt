@@ -6,11 +6,7 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
-if (MACOS)
-set(CMAKE_PREFIX_PATH "~/Qt/6.2.4/macos/lib/cmake")
-else(UBUNTU)
-set(CMAKE_PREFIX_PATH ~/Qt/6.2.4/gcc_64)
-endif()
+set(CMAKE_PREFIX_PATH ~/Qt/6.3.0/gcc_64)
 
 find_package(Qt6 COMPONENTS Core Gui Widgets REQUIRED)
 
@@ -29,8 +25,8 @@ add_executable(Roguelike
 
         controllers/target.cpp
         controllers/target.h
-        controllers/triangle.cpp
-        controllers/triangle.h
+        controllers/hero.cpp
+        controllers/hero.h
 
         main.cpp)
 

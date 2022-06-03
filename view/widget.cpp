@@ -15,7 +15,7 @@ Widget::Widget(QWidget* parent) :
     ui(new Ui::Widget) {
   /// Устанавливаем параметры окна приложения
   this->resize(600, 600);
-  this->setFixedSize(600, 600);
+  this->setMinimumSize(600, 600);
 
   ui->setupUi(this);
   custom_scene_ =
@@ -34,10 +34,10 @@ Widget::Widget(QWidget* parent) :
   /// Создаем кастомизированный курсор из ресурсного файла
   QCursor cursor = QCursor(QPixmap("../resources/cursor/cursorTarget.png"));
   ui->graphicsView->setCursor(cursor);    /// Устанавливаем курсор в QGraphicsView
-  triangle_ = new Triangle();  /// Инициализируем треугольник
-  triangle_->setPos(60, 60);  /// Устанавливаем стартовую позицию треугольника
-  triangle_->setZValue(2);
-  custom_scene_->addItem(triangle_);   /// Добавляем треугольник на графическую сцену
+  hero_ = new Hero();  /// Инициализируем треугольник
+  hero_->setPos(60, 60);  /// Устанавливаем стартовую позицию треугольника
+  hero_->setZValue(2);
+  custom_scene_->addItem(hero_);   /// Добавляем треугольник на графическую сцену
 
   move_timer_ = new QTimer();   /// Инициализируем игровой таймер
   /// Подключаем сигнал от таймера и слоту обработки игрового таймера
@@ -54,45 +54,37 @@ Widget::Widget(QWidget* parent) :
   /// Подключаем сигнал от графической сцены к слоту треугольника
   connect(custom_scene_,
           &CustomScene::signalGetMouseCoordinates,
-          triangle_,
-          &Triangle::slotTarget);
+          hero_,
+          &Hero::slotTarget);
   /// Соединяем сигнала стрельбы с графической сцены со слотом разрешения стрельбы треугольника
   connect(custom_scene_,
-          &CustomScene::signalShotAbility, triangle_, &Triangle::slotShot);
+          &CustomScene::signalShotAbility, hero_, &Hero::slotShot);
   /// Соединяем сигнал на создание пули со слотом, создающим пули в игре
-  connect(triangle_, &Triangle::signalBullet, this, &Widget::slotCreateBullet);
+  connect(hero_, &Hero::signalBullet, this, &Widget::slotCreateBullet);
 
   // Поставим стены
-  custom_scene_->addRect(0, 0, 520, 20, QPen(Qt::NoPen), QBrush(Qt::darkGray));
-  custom_scene_->addRect(0, 0, 20, 520, QPen(Qt::NoPen), QBrush(Qt::darkGray));
-  custom_scene_->addRect(0,
-                         500,
-                         520,
-                         20,
-                         QPen(Qt::NoPen),
-                         QBrush(Qt::darkGray));
-  custom_scene_->addRect(500,
-                         0,
-                         20,
-                         520,
-                         QPen(Qt::NoPen),
-                         QBrush(Qt::darkGray));
-  custom_scene_->addRect(170,
-                         250,
-                         180,
-                         20,
-                         QPen(Qt::NoPen),
-                         QBrush(Qt::darkGray));
-  custom_scene_->addRect(250,
-                         170,
-                         20,
-                         180,
-                         QPen(Qt::NoPen),
-                         QBrush(Qt::darkGray));
+  Widget::update();
+  custom_scene_->addLine(0, 0, Widget::width(), 0,
+                         QPen(Qt::NoPen));
+  custom_scene_->addLine(Widget::width(), 0, Widget::width(), Widget::height(),
+                         QPen(Qt::NoPen));
+  custom_scene_->addLine( Widget::width(), Widget::height(), 0, Widget::height(),
+                         QPen(Qt::NoPen));
+  custom_scene_->addLine(0, Widget::height(), 0, 0,
+                         QPen(Qt::NoPen));
 
   // QPolygon polygon;
   // polygon << QPoint(300, 180) << QPoint(125, 365) << QPoint(100, 149);
   // custom_scene_->addPolygon(polygon);
+
+  //custom_scene_->addPixmap(QPixmap("../resources/map/map.png"));
+  //auto item = QGraphicsView("../resources/map/map.png");
+  //custom_scene_->addPixmap(item);
+  // image_width_ = static_cast<int>(item->boundingRect().width()) - 500;
+  // view_->setScene(custom_scene_);
+   //custom_scene_->set(Qt::ScrollBarAlwaysOff);
+  // view_->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+  // view_->resize(500, 500);
 
   /// Инициализируем таймер для создания мишеней
   target_creating_timer_ = new QTimer();
@@ -109,7 +101,7 @@ Widget::~Widget() {
 
 void Widget::slotCreateBullet(QPointF start, QPointF end) {
   /// Добавляем на сцену пулю
-  Bullet* bullet = new Bullet(start, end, triangle_);
+  Bullet* bullet = new Bullet(start, end, hero_);
   bullet->setCallbackFunc(slotHitTarget);
   custom_scene_->addItem(bullet);
 }
@@ -195,43 +187,47 @@ void Widget::SlotMovmentTimer() {
   /** Перемещаем треугольник в зависимости от нажатых кнопок
    * */
   if (is_a_key_pressed_) {
-    triangle_->setX(triangle_->x() - 1);
+    hero_->SetRotation(left);
+    hero_->setX(hero_->x() - 1);
     /* Проверяем на столкновение,
      * если столкновение произошло,
      * то возвращаем героя обратно в исходную точку
      * */
-    if (!triangle_->scene()->collidingItems(triangle_).isEmpty()) {
-      triangle_->setX(triangle_->x() + 1);
+    if (!hero_->scene()->collidingItems(hero_).isEmpty()) {
+      hero_->setX(hero_->x() + 1);
     }
   }
   if (is_d_key_pressed_) {
-    triangle_->setX(triangle_->x() + 1);
+    hero_->SetRotation(right);
+    hero_->setX(hero_->x() + 1);
     /* Проверяем на столкновение,
      * если столкновение произошло,
      * то возвращаем героя обратно в исходную точку
      * */
-    if (!triangle_->scene()->collidingItems(triangle_).isEmpty()) {
-      triangle_->setX(triangle_->x() - 1);
+    if (!hero_->scene()->collidingItems(hero_).isEmpty()) {
+      hero_->setX(hero_->x() - 1);
     }
   }
   if (is_w_key_pressed_) {
-    triangle_->setY(triangle_->y() - 1);
+    hero_->SetRotation(up);
+    hero_->setY(hero_->y() - 1);
     /* Проверяем на столкновение,
      * если столкновение произошло,
      * то возвращаем героя обратно в исходную точку
      * */
-    if (!triangle_->scene()->collidingItems(triangle_).isEmpty()) {
-      triangle_->setY(triangle_->y() + 1);
+    if (!hero_->scene()->collidingItems(hero_).isEmpty()) {
+      hero_->setY(hero_->y() + 1);
     }
   }
   if (is_s_key_pressed_) {
-    triangle_->setY(triangle_->y() + 1);
+    hero_->SetRotation(down);
+    hero_->setY(hero_->y() + 1);
     /* Проверяем на столкновение,
      * если столкновение произошло,
      * то возвращаем героя обратно в исходную точку
      * */
-    if (!triangle_->scene()->collidingItems(triangle_).isEmpty()) {
-      triangle_->setY(triangle_->y() - 1);
+    if (!hero_->scene()->collidingItems(hero_).isEmpty()) {
+      hero_->setY(hero_->y() - 1);
     }
   }
 }

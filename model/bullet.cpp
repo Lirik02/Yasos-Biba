@@ -16,6 +16,8 @@ Bullet::Bullet(QPointF start, QPointF end, QGraphicsItem* hero, QObject* parent)
     : QObject(parent), QGraphicsItem() {
   this->hero_ = hero;      /// Запоминаем героя
   this->setRotation(0);   /// Устанавливаем начальный разворот
+  start.rx() += 40;
+  start.ry() += 40;
   this->setPos(start);    /// Устанавливаем стартовую позицию
   /// Определяем траекторию полёта пули
   QLineF lineToTarget(start, end);
@@ -46,15 +48,14 @@ Bullet::~Bullet() {
 }
 
 QRectF Bullet::boundingRect() const {
-  return QRectF(0, 0, 2, 4);
+  return QRectF(0, 0, 10, 34);
 }
 
 void Bullet::paint(QPainter* painter,
                    const QStyleOptionGraphicsItem* option,
                    QWidget* widget) {
-  painter->setPen(Qt::black);
-  painter->setBrush(Qt::black);
-  painter->drawRect(0, 0, 2, 4);
+
+  painter->drawPixmap(0, 0, QPixmap("../resources/arrow.png"));
 
   Q_UNUSED(option);
   Q_UNUSED(widget);

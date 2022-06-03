@@ -3,12 +3,14 @@
 
 #include <QWidget>
 #include <QGraphicsScene>
+#include <QGraphicsView>
 #include <QGraphicsItem>
 #include <QTimer>
 #include <QKeyEvent>
 #include <QDebug>
+#include <QImage>
 
-#include "../controllers/triangle.h"
+#include "../controllers/hero.h"
 #include "customscene.h"
 #include "../model/bullet.h"
 #include "../controllers/target.h"
@@ -31,7 +33,7 @@ class Widget : public QWidget {
 
   Ui::Widget* ui;
   CustomScene* custom_scene_;        /// Объявляем графическую сцену
-  Triangle* triangle_;         /// Объявляем треугольник
+  Hero* hero_;         /// Объявляем треугольник
   QTimer* target_creating_timer_;        // Таймер для создания мишеней
   static QList<QGraphicsItem*> targets_list_;  // Список мишеней
 
