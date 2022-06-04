@@ -13,12 +13,8 @@ class Sprite : public QObject, public QGraphicsItem {
  public:
   explicit Sprite(QPointF point, QObject* parent = 0);
 
-  /* Переопределяем тип Графического объекта взрыва,
-   * чтобы пуля могла данный объект игнорировать
-   * */
   enum { Type = UserType + 1 };
 
-  // Также переопределяем функцию для получения типа объекта
   int type() const;
 
  signals:
@@ -26,7 +22,7 @@ class Sprite : public QObject, public QGraphicsItem {
  public slots:
 
  private slots:
-  void nextFrame();   /// Слот для перелистывания кадров
+  void nextFrame();
 
  private:
   void paint(QPainter* painter,
@@ -35,9 +31,9 @@ class Sprite : public QObject, public QGraphicsItem {
   QRectF boundingRect() const;
 
  private:
-  QTimer* burst_animation_timer_;  /// Таймер для анимации взрыва
-  QPixmap* sprite_image_;   /// QPixmap для спрайта со взрывом
-  int current_frame_coordinates_;   /// Координата текущего кадра в спрайте
+  QTimer* burst_animation_timer_;
+  QPixmap* sprite_image_;
+  int current_frame_coordinates_;
 };
 
 #endif // SPRITE_H

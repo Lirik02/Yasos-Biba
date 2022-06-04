@@ -11,9 +11,6 @@ class Target : public QObject, public QGraphicsItem {
  public:
   explicit Target(QObject* parent = 0);
   ~Target();
-  /* Функция по нанесению урона,
-   * величина урона передаётся в качестве аргумента функции
-   * */
   void Hit(int damage);
 
  signals:
@@ -27,8 +24,8 @@ class Target : public QObject, public QGraphicsItem {
              QWidget* widget);
 
  private:
-  int health_;         // Текущий запас здоровья мишени
-  int max_health_;      // Максимальный запас здоровья мишени
+  int health_;
+  int max_health_;
 };
 
 #endif // TARGET_H

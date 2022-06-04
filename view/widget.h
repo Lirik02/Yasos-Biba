@@ -5,6 +5,8 @@
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QGraphicsItem>
+#include <QPushButton>
+#include <QMessageBox>
 #include <QTimer>
 #include <QKeyEvent>
 #include <QDebug>
@@ -29,17 +31,20 @@ class Widget : public QWidget {
  private:
   void keyPressEvent(QKeyEvent* event) override;
   void keyReleaseEvent(QKeyEvent* event) override;
-  void SlotMovmentTimer();
   void DrawValidMap();
 
   Ui::Widget* ui;
-  CustomScene* custom_scene_;        /// Объявляем графическую сцену
-  Hero* hero_;         /// Объявляем треугольник
+  CustomScene* custom_scene_;
+  Hero* hero_;
 
-  QTimer* target_creating_timer_;        // Таймер для создания мишеней
+  QTimer* target_creating_timer_;
   QTimer* move_timer_;
+  QTimer* enemy_damage_timer_;
 
-  static QList<QGraphicsItem*> targets_list_;  // Список мишеней
+
+  static QList<QGraphicsItem*> targets_list_;
+
+  QPushButton* exit_button_;
 
   bool is_a_key_pressed_ = false;
   bool is_s_key_pressed_ = false;
@@ -52,12 +57,13 @@ class Widget : public QWidget {
   int map_height_ = 900;
   QPixmap full_fon_;
 
-  static void slotHitTarget(QGraphicsItem* item); // CallBack Функция
+  static void slotHitTarget(QGraphicsItem* item);
 
  private slots:
-  void slotCreateBullet(QPointF start, QPointF end); /// Слот для создания пули
-  void slotCreateTarget(); // Слот для создания мишеней
-
+  void slotCreateBullet(QPointF start, QPointF end);
+  void slotCreateTarget();
+  void SlotMovementTimer();
+  void SlotDamageTimer();
 
 };
 

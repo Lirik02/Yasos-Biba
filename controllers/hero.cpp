@@ -2,7 +2,7 @@
 #include <math.h>
 #include <iostream>
 
-static const double Pi = 3.14159265358979323846264338327950288419717;
+static const double Pi = acos(-1);
 static double TwoPi = 2.0 * Pi;
 
 static qreal normalizeAngle(qreal angle) {
@@ -35,14 +35,10 @@ Hero::~Hero() {
 
 }
 
-// Изменены размеры героя
 QRectF Hero::boundingRect() const {
   return QRectF(-45, -45, 90, 90);
 }
 
-/* Возвращаем форму героя
- * В данном случае лучше использовать эллипс
- * */
 QPainterPath Hero::shape() const {
   QPainterPath path;
   path.addEllipse(boundingRect());
@@ -52,70 +48,32 @@ QPainterPath Hero::shape() const {
 void Hero::paint(QPainter* painter,
                  const QStyleOptionGraphicsItem* option,
                  QWidget* widget) {
-  /** Отрисовка персонажа
-   * */
-  // QPolygon polygon;
-  // polygon << QPoint(-12, -15) << QPoint(-12, 15) << QPoint(12, 15) << QPoint(12, -15);
 
   painter->drawPixmap(-45, -45, current_sprite_);
+
+  painter->setPen(Qt::NoPen);
+  painter->setBrush(Qt::red);
+  painter->drawRect(-20, -20, (int) 40 * health_ / max_health_, 3);
 
   Q_UNUSED(option);
   Q_UNUSED(widget);
 }
 
 void Hero::slotTarget(QPointF point) {
-  // /// Определяем расстояние до цели
   mouse_position_ = point;
-  // QLineF lineToTarget(QPointF(0, 0), mapFromScene(mouse_position_));
-  // /// Угол поворота в направлении к цели
-  // qreal angleToTarget = ::acos(lineToTarget.dx() / lineToTarget.length());
-  // if (lineToTarget.dy() < 0)
-  //   angleToTarget = TwoPi - angleToTarget;
-  // angleToTarget = normalizeAngle((Pi - angleToTarget) + Pi / 2);
-  //
-  // /** В Зависимости от того, слева или справа находится Муха от Паука,
-  //  * устанавливаем направление поворота паука в данном тике таймера
-  //  * Скорость разворота зависит от угла, на который необходимо повернуться треугольнику
-  //  * */
-  // if (angleToTarget >= 0 && angleToTarget < Pi) {
-  //   /// Rotate left
-  //   setRotation(rotation() - angleToTarget * 180 / Pi);
-  // } else if (angleToTarget <= TwoPi && angleToTarget > Pi) {
-  //   /// Rotate right
-  //   setRotation(rotation() + (angleToTarget - TwoPi) * (-180) / Pi);
-  // }
 }
 
 void Hero::slotGameTimer() {
   NextSprite();
-  // QLineF lineToTarget(QPointF(0, 0), mapFromScene(mouse_position_));
-  // /// Угол поворота в направлении к цели
-  // qreal angleToTarget = ::acos(lineToTarget.dx() / lineToTarget.length());
-  // if (lineToTarget.dy() < 0)
-  //   angleToTarget = TwoPi - angleToTarget;
-  // angleToTarget = normalizeAngle((Pi - angleToTarget) + Pi / 2);
-  //
-  // /** В Зависимости от того, слева или справа находится Муха от Паука,
-  //  * устанавливаем направление поворота паука в данном тике таймера
-  //  * Скорость разворота зависит от угла, на который необходимо повернуться пауку
-  //  * */
-  // if (angleToTarget >= 0 && angleToTarget < Pi) {
-  //   /// Rotate left
-  //   setRotation(rotation() - angleToTarget * 180 / Pi);
-  // } else if (angleToTarget <= TwoPi && angleToTarget > Pi) {
-  //   /// Rotate right
-  //   setRotation(rotation() + (angleToTarget - TwoPi) * (-180) / Pi);
-  // }
 }
 
 void Hero::slotBulletTimer() {
-  /// Если стрельба разрешена, то вызываем сигнал на создание пули
   if (shot_condition_) emit signalBullet(mapToScene(0, -20), mouse_position_);
 
 }
 
 void Hero::slotShot(bool shot) {
-  this->shot_condition_ = shot;  /// Получаем разрешение или запрет на стрельбу
+  this->shot_condition_ = shot;
 }
 void Hero::NextSprite() {
   QPixmap image("../resources/character.png");
@@ -151,7 +109,7 @@ void Hero::NextSprite() {
     }
     current_sprite_ = image.copy(sprite_x_, sprite_y_, 80, 85);
   }
-  if(rotation_ == in_position) {
+  if (rotation_ == in_position) {
     sprite_x_ = 30;
   }
 }
@@ -159,6 +117,12 @@ void Hero::NextSprite() {
 void Hero::SetRotation(Rotation rotation) {
   rotation_ = rotation;
 }
-void Hero::slotSpritesTimer() {
 
+void Hero::Hit(int damage) {
+  health_ -= damage;
+  this->update(QRectF(-45, -45, 90, 90));
+  if (health_ <= 0) {
+    this->deleteLater();
+    destroyed(this);
+  }
 }

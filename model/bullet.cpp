@@ -14,21 +14,19 @@ static qreal normalizeAngle(qreal angle) {
 
 Bullet::Bullet(QPointF start, QPointF end, QGraphicsItem* hero, QObject* parent)
     : QObject(parent), QGraphicsItem() {
-  this->hero_ = hero;      /// Запоминаем героя
-  this->setRotation(0);   /// Устанавливаем начальный разворот
-  start.rx() += 40;
-  start.ry() += 40;
-  this->setPos(start);    /// Устанавливаем стартовую позицию
-  /// Определяем траекторию полёта пули
+  this->hero_ = hero;
+  this->setRotation(0);
+  start.rx() -= 0;
+  start.ry() += 35;
+  this->setPos(start);
+
   QLineF lineToTarget(start, end);
-  /// Угол поворота в направлении к цели
+
   qreal angleToTarget = ::acos(lineToTarget.dx() / lineToTarget.length());
   if (lineToTarget.dy() < 0)
     angleToTarget = TwoPi - angleToTarget;
   angleToTarget = normalizeAngle((Pi - angleToTarget) + Pi / 2);
 
-  /** Разворачиваем пули по траектории
-   * */
   if (angleToTarget >= 0 && angleToTarget < Pi) {
     /// Rotate left
     setRotation(rotation() - angleToTarget * 180 / Pi);
@@ -36,9 +34,8 @@ Bullet::Bullet(QPointF start, QPointF end, QGraphicsItem* hero, QObject* parent)
     /// Rotate right
     setRotation(rotation() + (angleToTarget - TwoPi) * (-180) / Pi);
   }
-  /// Инициализируем полётный таймер
+
   bullet_timer_ = new QTimer();
-  /// И подключаем его к слоту для обработки полёта пули
   connect(bullet_timer_, &QTimer::timeout, this, &Bullet::slotBulletTimer);
   bullet_timer_->start(7);
 }
@@ -64,19 +61,11 @@ void Bullet::paint(QPainter* painter,
 void Bullet::slotBulletTimer() {
   setPos(mapToParent(0, -3));
 
-  /** Производим проверку на то, наткнулась ли пуля на какой-нибудь
-   * элемент на графической сцене.
-   * Для этого определяем небольшую область перед пулей,
-   * в которой будем искать элементы
-   * */
   QList<QGraphicsItem*> foundItems = scene()->items(QPolygonF()
                                                         << mapToScene(0, 0)
                                                         << mapToScene(-1, -1)
                                                         << mapToScene(1, -1));
-  /** После чего проверяем все элементы.
-   * Одними из них будут сама Пуля и Герой - с ними ничего не делаем.
-   * А с остальными вызываем CallBack функцию
-   * */
+
       foreach (QGraphicsItem* item, foundItems) {
       /* Добавляем в проверку ещё и сами взрывы,
        * чтобы пули их игнорировали и не взрывались
@@ -90,9 +79,6 @@ void Bullet::slotBulletTimer() {
       this->deleteLater();    // Уничтожаем пулю
     }
 
-  /** Проверка выхода за границы поля
-   * Если пуля вылетает за заданные границы, то пулю необходимо уничтожить
-   * */
   if (this->x() < 0) {
     this->deleteLater();
   }

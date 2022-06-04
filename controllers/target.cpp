@@ -1,16 +1,13 @@
 #include "target.h"
 
-/* Функция для получения рандомного числа
- * в диапазоне от минимального до максимального
- * */
 static int randomBetween(int low, int high) {
   return (rand() % ((high + 1) - low) + low);
 }
 
 Target::Target(QObject* parent) :
     QObject(parent), QGraphicsItem() {
-  health_ = randomBetween(1, 15);   // Задаём случайное значение здоровья
-  max_health_ = health_;  // Устанавливаем максимальное здоровье равным текущему
+  health_ = randomBetween(1, 15);
+  max_health_ = health_;
 }
 
 Target::~Target() {
@@ -21,21 +18,18 @@ QRectF Target::boundingRect() const {
   return QRectF(-20,
                 -20,
                 64,
-                74);   // Ограничиваем область, в которой лежит цель
+                74);
 }
 
 void Target::paint(QPainter* painter,
                    const QStyleOptionGraphicsItem* option,
                    QWidget* widget) {
-  /* Отрисовываем зеленый квадрат
-   * */
 
-  painter->drawPixmap(-20, -10,  QPixmap("../resources/enemy/1 Pink_Monster/Pink_Monster.png"));
+  painter->drawPixmap(-20,
+                      -10,
+                      QPixmap(
+                          "../resources/enemy/1 Pink_Monster/Pink_Monster.png"));
 
-  /* Отрисовываем полоску жизни
-   * соизмеримо текущему здоровью
-   * относительно максимального здоровья
-   * */
   painter->setPen(Qt::NoPen);
   painter->setBrush(Qt::red);
   painter->drawRect(-20, -20, (int) 40 * health_ / max_health_, 3);
@@ -45,8 +39,13 @@ void Target::paint(QPainter* painter,
 }
 
 void Target::Hit(int damage) {
-  health_ -= damage;   // Уменьшаем здоровье мишени
-  this->update(QRectF(-20, -20, 40, 60));    // Перерисовываем мишень
-  // Если здоровье закончилось, то инициируем смерть мишени
-  if (health_ <= 0) this->deleteLater();
+  health_ -= damage;
+  this->update(QRectF(-20,
+                      -20,
+                      64,
+                      74));
+  if (health_ <= 0) {
+    this->deleteLater();
+    destroyed(this);
+  }
 }

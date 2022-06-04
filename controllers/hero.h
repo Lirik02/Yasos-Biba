@@ -11,8 +11,6 @@
 #include <QDebug>
 #include <QCursor>
 
-//#include <windows.h>
-
 enum Rotation{
   up, down, left, right, in_position
 };
@@ -24,16 +22,14 @@ class Hero : public QObject, public QGraphicsItem {
   explicit Hero(QObject* parent = 0);
   ~Hero();
 
+  void Hit(int damage);
   void NextSprite();
   void SetRotation(Rotation rotation);
  signals:
-  /// Сигнал для создания пули с параметрами траектории
   void signalBullet(QPointF start, QPointF end);
 
  public slots:
-  /// Слот для получения данных о положении курсора
   void slotTarget(QPointF point);
-  /// слот для обработки разрешения стрельбы
   void slotShot(bool shot);
 
  private:
@@ -41,22 +37,28 @@ class Hero : public QObject, public QGraphicsItem {
   void paint(QPainter* painter,
              const QStyleOptionGraphicsItem* option,
              QWidget* widget) override;
-  QPainterPath shape() const override;     // Функция, возвращающая форму фигуры, необходимо для обработки коллизий
+  QPainterPath shape() const override;
 
  private slots:
-  void slotGameTimer();   /// Игровой слот
-  void slotSpritesTimer();   /// Игровой слот
-  void slotBulletTimer(); /// Слот проверки пули
+  void slotGameTimer();
+  void slotBulletTimer();
 
  private:
-  bool shot_condition_;              /// Переменная состояния стрельбы
-  QTimer* bullet_timer_;    /// Таймер пули
-  QTimer* game_timer_;      /// Игровой таймер
-  QPointF mouse_position_;         /// Положение курсора
+  bool shot_condition_;
+
+  QTimer* bullet_timer_;
+  QTimer* game_timer_;
+
+  QPointF mouse_position_;
   QPixmap current_sprite_;
+
   int sprite_x_ {30};
   int sprite_y_ {5};
+
   Rotation rotation_ {down};
+
+  int health_{100};
+  int max_health_{100};
 };
 
 #endif // HERO_H

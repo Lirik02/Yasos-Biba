@@ -19,7 +19,7 @@
 
 class Menu : public QMainWindow {
 
-  Q_OBJECT
+ Q_OBJECT
 
  public:
   Menu();

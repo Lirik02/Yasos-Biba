@@ -3,14 +3,14 @@
 Sprite::Sprite(QPointF point, QObject* parent) :
     QObject(parent), QGraphicsItem() {
   this->setPos(point);    // Устанавливаем позицию взрыва
-  current_frame_coordinates_ = 0;       /// Координату X начала взрыва пули
+  current_frame_coordinates_ = 0;
   sprite_image_ = new QPixmap("../resources/sprites/sprite_sheet.png");
 
   burst_animation_timer_ =
-      new QTimer();   /// Инициализируем таймер анимации взрыва
-  /// Подключаем сигнал от таймера к слоту анимации взрыва
+      new QTimer();
+
   connect(burst_animation_timer_, &QTimer::timeout, this, &Sprite::nextFrame);
-  burst_animation_timer_->start(25);   /// Стартуем таймер с частотой 25 милисекунд
+  burst_animation_timer_->start(25);
 }
 
 QRectF Sprite::boundingRect() const {
@@ -20,7 +20,7 @@ QRectF Sprite::boundingRect() const {
 void Sprite::paint(QPainter* painter,
                    const QStyleOptionGraphicsItem* option,
                    QWidget* widget) {
-  // Отрисовываем один из кадров взрыва
+
   painter->drawPixmap(-10,
                       -10,
                       *sprite_image_,
@@ -33,19 +33,14 @@ void Sprite::paint(QPainter* painter,
 }
 
 void Sprite::nextFrame() {
-  current_frame_coordinates_ +=
-      20; // Продвигаем координату X для выбора следующего кадра
+  current_frame_coordinates_ += 20;
   if (current_frame_coordinates_ >= 300) {
-    this->deleteLater();    // Если кадры закончились, то удаляем объект взрыва
+    this->deleteLater();
   } else {
-    this->update(-10,
-                 -10,
-                 20,
-                 20);    // В противном случае обновляем графический объект
+    this->update(-10, -10, 20, 20);
   }
 }
 
 int Sprite::type() const {
-  // Возвращаем тип объекта
   return Type;
 }

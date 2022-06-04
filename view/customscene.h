@@ -13,14 +13,12 @@ class CustomScene : public QGraphicsScene {
   ~CustomScene();
 
  signals:
-  /// Сигнал для передачи координат положения курсора мыши
   void signalGetMouseCoordinates(QPointF point);
-  void signalShotAbility(bool shot); /// Сигнал на стрельбу
+  void signalShotAbility(bool shot);
 
  public slots:
 
  private:
-  /// Функция, в которой производится отслеживание положения мыши
   void mouseMoveEvent(QGraphicsSceneMouseEvent* event);
   void mousePressEvent(QGraphicsSceneMouseEvent* event);
   void mouseReleaseEvent(QGraphicsSceneMouseEvent* event);

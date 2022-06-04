@@ -3,20 +3,44 @@
 Menu::Menu() :
     layout_(new QVBoxLayout()),
     widget_(new QWidget(this)),
-    play_button_(new QPushButton("Играть", this)),
-    settings_button_(new QPushButton("Настройки", this)),
-    exit_button_(new QPushButton("Выход", this)) {
+    play_button_(new QPushButton("Play", this)),
+    settings_button_(new QPushButton("Settings", this)),
+    exit_button_(new QPushButton("Exit", this)) {
 
+  resize(1440, 900);
+  setMinimumSize(1440, 900);
+  setWindowTitle("Roguelike");
 
-  resize(700, 700);
-  setMinimumSize(300, 300);
-  setWindowTitle("Игра");
+  play_button_->setStyleSheet("background-color: red;"
+                              "border-style: outset;"
+                              "border-width: 2px;"
+                              "border-radius: 10px;"
+                              "border-color: beige;"
+                              "font: bold 14px;"
+                              "min-width: 10em;"
+                              "padding: 6px;");
+  settings_button_->setStyleSheet("background-color: red;"
+                                  "border-style: outset;"
+                                  "border-width: 2px;"
+                                  "border-radius: 10px;"
+                                  "border-color: beige;"
+                                  "font: bold 14px;"
+                                  "min-width: 10em;"
+                                  "padding: 6px;");
+  exit_button_->setStyleSheet("background-color: red;"
+                              "border-style: outset;"
+                              "border-width: 2px;"
+                              "border-radius: 10px;"
+                              "border-color: beige;"
+                              "font: bold 14px;"
+                              "min-width: 10em;"
+                              "padding: 6px;");
 
 
   //создаем фон
   QPalette palette;
   palette.setBrush(QPalette::Window,
-                   QBrush(QPixmap("://01.06.2022/01.06.2022/resources/menu").scaled(this->size())));
+                   QBrush(QPixmap("../resources/menu_fon.jpg").scaled(this->size())));
   setPalette(palette);
 
   CreateWidgets();
@@ -32,14 +56,16 @@ void Menu::CreateWidgets() {
   buttons_.push_back(settings_button_);
   buttons_.push_back(exit_button_);
 
-  layout_ ->addWidget(play_button_, 500, Qt::AlignCenter);
-  layout_ ->addWidget(settings_button_, 10, Qt::AlignCenter);
-  layout_ ->addWidget(exit_button_, 10, Qt::AlignCenter);
+  layout_->addWidget(play_button_, 1, Qt::AlignCenter);
+  layout_->addWidget(settings_button_, 2, Qt::AlignCenter);
+  layout_->addWidget(exit_button_, 3, Qt::AlignCenter);
 
-  QSizePolicy policy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-  widget_->setSizePolicy(policy);
+  layout_->setStretch(1, 0);
+  layout_->setStretch(21, 1);
+  layout_->setStretch(21, 2);
+  layout_->setStretch(21, 3);
 
-  widget_ ->setLayout(layout_);
+  widget_->setLayout(layout_);
 }
 
 void Menu::ConnectWidgets() {
@@ -54,8 +80,8 @@ void Menu::ConnectWidgets() {
   });
 
   connect(exit_button_, &::QPushButton::clicked, this, [&]() {
-    auto answer = QMessageBox::question(this, "Выход",
-                                        "Вы уверены?");
+    auto answer = QMessageBox::question(this, "Exit",
+                                        "Are you sure?");
     if (answer == QMessageBox::Yes) {
       close();
     }
@@ -63,11 +89,12 @@ void Menu::ConnectWidgets() {
 }
 
 Menu::Settings::Settings(int sound_level) :
-volume_level_(new QSpinBox(this)),
-sound_(new QLabel("Громкость", this)) {
+    volume_level_(new QSpinBox(this)),
+    sound_(new QLabel("Sound", this)) {
 
-  setWindowTitle("Настройки");
-  setMaximumSize(500, 300);
+  setWindowTitle("Settings");
+  setMinimumSize(200, 150);
+  resize(200, 150);
 
   QGridLayout* layout = new QGridLayout;
 

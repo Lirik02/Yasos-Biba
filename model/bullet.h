@@ -36,14 +36,11 @@ class Bullet : public QObject, public QGraphicsItem {
   void (* callbackFunc)(QGraphicsItem* item);
 
  private:
-  QTimer* bullet_timer_;    /// Слот для обработки таймера пули
-  /** Чтобы пуля игнорировала героя,
-   * поскольку появляется в данном случае внутри самого героя
-   * Мелочи недопила, не относится к уроку
-   * */
+  QTimer* bullet_timer_;
+
   QGraphicsItem* hero_;
  private slots:
-  void slotBulletTimer(); /// Слот для обработки полёта пули
+  void slotBulletTimer();
 };
 
 #endif // BULLET_H

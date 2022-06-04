@@ -14,11 +14,11 @@ void CustomScene::mouseMoveEvent(QGraphicsSceneMouseEvent* event) {
 }
 
 void CustomScene::mousePressEvent(QGraphicsSceneMouseEvent* event) {
-  emit signalShotAbility(true); /// Когда клавиша мыши нажата, то можно стрелять
+  emit signalShotAbility(true);
   Q_UNUSED(event);
 }
 
 void CustomScene::mouseReleaseEvent(QGraphicsSceneMouseEvent* event) {
-  emit signalShotAbility(false); /// Когда клавишу мыши отпустили, то стрелять нельзя
+  emit signalShotAbility(false);
   Q_UNUSED(event);
 }

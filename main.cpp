@@ -1,9 +1,9 @@
-#include "view/widget.h"
+#include "menu/menu.h"
 #include <QApplication>
 
 int main(int argc, char* argv[]) {
   QApplication a(argc, argv);
-  Widget w;
+  Menu w;
   w.show();
 
   return a.exec();
