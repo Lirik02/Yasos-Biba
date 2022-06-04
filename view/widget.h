@@ -32,6 +32,7 @@ class Widget : public QWidget {
   void keyPressEvent(QKeyEvent* event) override;
   void keyReleaseEvent(QKeyEvent* event) override;
   void DrawValidMap();
+  void OnLose();
 
   Ui::Widget* ui;
   CustomScene* custom_scene_;
@@ -56,6 +57,7 @@ class Widget : public QWidget {
   int map_width_ = 1440;
   int map_height_ = 900;
   QPixmap full_fon_;
+  std::vector<QPolygon> borders_;
 
   static void slotHitTarget(QGraphicsItem* item);
 

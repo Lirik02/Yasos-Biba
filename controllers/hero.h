@@ -22,7 +22,7 @@ class Hero : public QObject, public QGraphicsItem {
   explicit Hero(QObject* parent = 0);
   ~Hero();
 
-  void Hit(int damage);
+  bool Hit(int damage);
   void NextSprite();
   void SetRotation(Rotation rotation);
  signals:

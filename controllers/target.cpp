@@ -6,7 +6,7 @@ static int randomBetween(int low, int high) {
 
 Target::Target(QObject* parent) :
     QObject(parent), QGraphicsItem() {
-  health_ = randomBetween(1, 15);
+  health_ = 15;
   max_health_ = health_;
 }
 

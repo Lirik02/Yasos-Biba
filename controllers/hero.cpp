@@ -118,11 +118,11 @@ void Hero::SetRotation(Rotation rotation) {
   rotation_ = rotation;
 }
 
-void Hero::Hit(int damage) {
+bool Hero::Hit(int damage) {
   health_ -= damage;
   this->update(QRectF(-45, -45, 90, 90));
   if (health_ <= 0) {
-    this->deleteLater();
-    destroyed(this);
+    return true;
   }
+  return false;
 }

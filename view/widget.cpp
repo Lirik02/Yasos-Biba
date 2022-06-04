@@ -30,6 +30,35 @@ Widget::Widget(QWidget* parent) :
                               Widget::window()->width(),
                               Widget::window()->height());
 
+  // QPolygon polygon;
+  // polygon << QPoint(210, 0)
+  //         << QPoint(1615, 600)
+  //         << QPoint(1150, 1160)
+  //         << QPoint(1050, 2420)
+  //         << QPoint(1414, 2470)
+  //         << QPoint(1960, 690)
+  //         << QPoint(2673, 670)
+  //         << QPoint(3333, 2222)
+  //         << QPoint(4160, 3206)
+  //         << QPoint(4160, 0);
+  // borders_.emplace_back(polygon);
+  // polygon.clear();
+  // polygon << QPoint(0, 275)
+  //         << QPoint(670, 858)
+  //         << QPoint(390, 1340)
+  //         << QPoint(581, 3290)
+  //         << QPoint(1355, 3340)
+  //         << QPoint(2145, 1595)
+  //         << QPoint(2440, 1615)
+  //         << QPoint(4160, 3600)
+  //         << QPoint(4160, 3840)
+  //         << QPoint(0, 3840);
+  // borders_.emplace_back(polygon);
+  // for (int i = 0; i < borders_.size(); ++i) {
+  //   custom_scene_->addPolygon(borders_[i]);
+  // }
+  // custom_scene_->addPolygon(polygon);
+
   full_fon_ = (QPixmap("../resources/map/map.png"));
 
   DrawValidMap();
@@ -47,8 +76,11 @@ Widget::Widget(QWidget* parent) :
   move_timer_->start(5);
 
   enemy_damage_timer_ = new QTimer();
-  connect(enemy_damage_timer_, &QTimer::timeout, this, &Widget::SlotDamageTimer);
-  enemy_damage_timer_ ->start(1000);
+  connect(enemy_damage_timer_,
+          &QTimer::timeout,
+          this,
+          &Widget::SlotDamageTimer);
+  enemy_damage_timer_->start(1000);
 
   ui->graphicsView->setMouseTracking(true);
 
@@ -107,8 +139,9 @@ void Widget::slotCreateTarget() {
 void Widget::slotHitTarget(QGraphicsItem* item) {
       foreach (QGraphicsItem* targ, targets_list_) {
       if (targ == item) {
-        Target* t = qgraphicsitem_cast<Target*>(targ);
-        t->Hit(randomBetween(1, 3));
+        auto* t = qgraphicsitem_cast<Target*>(targ);
+        t->Hit(15);
+        targets_list_.removeOne(t);
       }
     }
 }
@@ -173,11 +206,21 @@ void Widget::SlotMovementTimer() {
   if (is_a_key_pressed_) {
     hero_->SetRotation(left);
     //hero_->setX(hero_->x() - 1);
+    // for (int i = 0; i < borders_.size(); ++i) {
+    //   for (int j = 0; j < borders_[i].size(); ++j) {
+    //     borders_[i][j].setX(borders_[i][j].x() + 1);
+    //   }
+    // }
     map_x_--;
     DrawValidMap();
 
     if (!hero_->scene()->collidingItems(hero_).isEmpty()) {
       //hero_->setX(hero_->x() + 1);
+      // for (int i = 0; i < borders_.size(); ++i) {
+      //   for (int j = 0; j < borders_[i].size(); ++j) {
+      //     borders_[i][j].setX(borders_[i][j].x() - 1);
+      //   }
+      // }
       map_x_++;
       DrawValidMap();
     } else {
@@ -189,11 +232,21 @@ void Widget::SlotMovementTimer() {
   if (is_d_key_pressed_) {
     hero_->SetRotation(right);
     //hero_->setX(hero_->x() + 1);
+    // for (int i = 0; i < borders_.size(); ++i) {
+    //   for (int j = 0; j < borders_[i].size(); ++j) {
+    //     borders_[i][j].setX(borders_[i][j].x() - 1);
+    //   }
+    // }
     map_x_++;
     DrawValidMap();
 
     if (!hero_->scene()->collidingItems(hero_).isEmpty()) {
       // hero_->setX(hero_->x() - 1);
+      // for (int i = 0; i < borders_.size(); ++i) {
+      //   for (int j = 0; j < borders_[i].size(); ++j) {
+      //     borders_[i][j].setX(borders_[i][j].x() + 1);
+      //   }
+      // }
       map_x_--;
       DrawValidMap();
     } else {
@@ -205,18 +258,27 @@ void Widget::SlotMovementTimer() {
   if (is_w_key_pressed_) {
     hero_->SetRotation(up);
     // hero_->setY(hero_->y() - 1);
-    map_y_--;
-    DrawValidMap();
-
-    if (!hero_->scene()->collidingItems(hero_).isEmpty()) {
-      //  hero_->setY(hero_->y() + 1);
-      map_y_++;
+    // for (int i = 0; i < borders_.size(); ++i) {
+    //   for (int j = 0; j < borders_[i].size(); ++j) {
+    //     borders_[i][j].setY(borders_[i][j].y() - 1);
+    //   }
+      map_y_--;
       DrawValidMap();
-    } else {
-      for (int i = 0; i < targets_list_.size(); ++i) {
-        targets_list_[i]->setY(targets_list_[i]->y() + 1);
+
+      if (!hero_->scene()->collidingItems(hero_).isEmpty()) {
+        //  hero_->setY(hero_->y() + 1);
+        map_y_++;
+        DrawValidMap();
+      } else {
+        for (int i = 0; i < targets_list_.size(); ++i) {
+          targets_list_[i]->setY(targets_list_[i]->y() + 1);
+        }
+        // for (int i = 0; i < borders_.size(); ++i) {
+        //   for (int j = 0; j < borders_[i].size(); ++j) {
+        //     borders_[i][j].setY(borders_[i][j].y() + 1);
+        //   }
+        // }
       }
-    }
   }
   if (is_s_key_pressed_) {
     hero_->SetRotation(down);
@@ -232,6 +294,11 @@ void Widget::SlotMovementTimer() {
       for (int i = 0; i < targets_list_.size(); ++i) {
         targets_list_[i]->setY(targets_list_[i]->y() - 1);
       }
+      // for (int i = 0; i < borders_.size(); ++i) {
+      //   for (int j = 0; j < borders_[i].size(); ++j) {
+      //   borders_[i][j].setY(borders_[i][j].y() - 1);
+      //   }
+      // }
     }
   }
   if (!is_w_key_pressed_ && !is_a_key_pressed_ && !is_s_key_pressed_
@@ -242,7 +309,7 @@ void Widget::SlotMovementTimer() {
     double x = targets_list_[i]->x() - hero_->x();
     double y = targets_list_[i]->y() - hero_->y();
     double range = sqrt(x * x + y * y);
-    if(range <= 500 && range >= 100) {
+    if (range <= 500 && range >= 100) {
       targets_list_[i]->setX(targets_list_[i]->x() - x / (range * 2));
       targets_list_[i]->setY(targets_list_[i]->y() - y / (range * 2));
     }
@@ -254,27 +321,68 @@ void Widget::DrawValidMap() {
                                        map_width_, map_height_);
   if (map_x_ < 0) {
     map_x_ = 0;
+    for (int i = 0; i < targets_list_.size(); ++i) {
+      targets_list_[i]->setX(targets_list_[i]->x() - 1);
+    }
   }
   if (map_y_ < 0) {
     map_y_ = 0;
+    for (int i = 0; i < targets_list_.size(); ++i) {
+      targets_list_[i]->setY(targets_list_[i]->y() - 1);
+    }
   }
   if (map_x_ + map_width_ > full_fon_.width()) {
     map_x_ = full_fon_.width() - map_width_;
+    for (int i = 0; i < targets_list_.size(); ++i) {
+      targets_list_[i]->setX(targets_list_[i]->x() + 1);
+    }
+  }
+  if (map_y_ + map_height_ > full_fon_.height()) {
+    map_y_ = full_fon_.height() - map_height_;
+    for (int i = 0; i < targets_list_.size(); ++i) {
+      targets_list_[i]->setY(targets_list_[i]->y() + 1);
+    }
   }
   custom_scene_->setBackgroundBrush(visible_fon);
 }
-
 
 void Widget::SlotDamageTimer() {
   for (int i = 0; i < targets_list_.size(); ++i) {
     double x = targets_list_[i]->x() - hero_->x();
     double y = targets_list_[i]->y() - hero_->y();
     double range = sqrt(x * x + y * y);
-    if(range <= 100) {
-      hero_->Hit(5);
+    if (range <= 100) {
+      bool flag = hero_->Hit(5);
+      if (flag) {
+        OnLose();
+      }
     }
   }
 }
+void Widget::OnLose() {
+  target_creating_timer_->stop();
+  move_timer_->stop();
+  enemy_damage_timer_->stop();
+  target_creating_timer_->stop();
+  move_timer_->stop();
+  enemy_damage_timer_->stop();
+
+  hero_->deleteLater();
+
+  borders_.clear();
+
+  //custom_scene_->addPixmap(QPixmap("../resources/on_lose.jpg"));
+
+   QPixmap full (QPixmap("../resources/on_lose.jpg"));
+  QPixmap part = full.copy(250, 100,
+                              map_width_, map_height_);
+  custom_scene_->addPixmap(part);
+
+}
+
+
+
+
 
 
 
